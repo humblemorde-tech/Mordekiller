@@ -1,0 +1,7 @@
+#### `.gitignore`
+```
+node_modules
+morde_auth
+.env
+npm-debug.log
+```
