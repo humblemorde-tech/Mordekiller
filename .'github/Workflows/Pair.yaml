@@ -1,0 +1,47 @@
+
+```yaml
+name: Pair WhatsApp
+
+on:
+  workflow_dispatch:
+
+jobs:
+  check-fork:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify user forked the repo
+        run: |
+          if [ "${{ github.repository_owner }}" == "humblemorde-tech" ]; then
+            echo "❌ ERROR: YOU MUST FORK THIS REPO FIRST!"
+            exit 1
+          fi
+          echo "✅ Running from fork: ${{ github.repository }}"
+
+  pair:
+    needs: check-fork
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Start Pairing Process
+        run: node pair.js
+        env:
+          PHONE_NUMBER: "254731070008"  # <-- YOUR NUMBER HARDCODED HERE
+
+      - name: Upload Session Backup
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: session-backup
+          path: session/
+          retention-days: 1
+```
